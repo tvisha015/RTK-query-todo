@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Task from "./TaskItem";
 import { Link } from "react-router-dom";
+import { useGetTasksQuery } from "./app/features/apiSlice";
 
 export default function Home() {
   const [tasksList, setTasksList] = useState([]);
