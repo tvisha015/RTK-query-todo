@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Task from "./TaskItem";
 import { Link } from "react-router-dom";
-import { useGetTasksQuery } from "./app/features/apiSlice";
+import { useAddTaskMutation, useGetTasksQuery } from "./app/features/apiSlice";
 
 export default function Home() {
   const [newTask, setNewTask] = useState("");
@@ -10,15 +10,7 @@ export default function Home() {
 
   const {data: tasksList, isError, isLoading, error} = useGetTasksQuery();
 
-  const addTask = async (task) => {
-    await fetch(`${BASE_URL}/tasks`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(task),
-    });
-  };
+  const [addTask] = useAddTaskMutation();
 
   const updateTask = async ({ id, ...updatedTask }) => {
     await fetch(`${BASE_URL}/tasks/${id}`, {
