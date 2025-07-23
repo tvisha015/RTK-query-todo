@@ -1,32 +1,15 @@
 import { useEffect, useState } from "react";
 import Task from "./TaskItem";
 import { Link } from "react-router-dom";
-import { useAddTaskMutation, useGetTasksQuery } from "./app/features/apiSlice";
+import { useAddTaskMutation, useDeleteTaskMutation, useGetTasksQuery, useUpdateTaskMutation } from "./app/features/apiSlice";
 
 export default function Home() {
   const [newTask, setNewTask] = useState("");
 
-  const BASE_URL = "http://localhost:3000";
-
   const {data: tasksList, isError, isLoading, error} = useGetTasksQuery();
-
   const [addTask] = useAddTaskMutation();
-
-  const updateTask = async ({ id, ...updatedTask }) => {
-    await fetch(`${BASE_URL}/tasks/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedTask),
-    });
-  };
-
-  const deleteTask = async (id) => {
-    await fetch(`${BASE_URL}/tasks/${id}`, {
-      method: "DELETE",
-    });
-  };
+  const [updateTask] = useUpdateTaskMutation();
+  const [deleteTask] = useDeleteTaskMutation();
 
   return (
     <div className="flex h-screen flex-grow items-start justify-center bg-gray-900 p-4">
