@@ -4,30 +4,11 @@ import { Link } from "react-router-dom";
 import { useGetTasksQuery } from "./app/features/apiSlice";
 
 export default function Home() {
-  const [tasksList, setTasksList] = useState([]);
   const [newTask, setNewTask] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [error, setError] = useState(null);
 
   const BASE_URL = "http://localhost:3000";
 
-  useEffect(() => {
-    setIsLoading(true);
-    getTasks().then(() => setIsLoading(false));
-  }, []);
-
-  const getTasks = async () => {
-    try {
-      const response = await fetch(`${BASE_URL}/tasks`);
-      const tasks = await response.json();
-      setTasksList(tasks.reverse());
-    } catch (err) {
-      setIsLoading(false);
-      setIsError(true);
-      setError(err);
-    }
-  };
+  const {data: tasksList, isError, isLoading, error} = useGetTasksQuery();
 
   const addTask = async (task) => {
     await fetch(`${BASE_URL}/tasks`, {
@@ -37,7 +18,6 @@ export default function Home() {
       },
       body: JSON.stringify(task),
     });
-    getTasks();
   };
 
   const updateTask = async ({ id, ...updatedTask }) => {
@@ -48,14 +28,12 @@ export default function Home() {
       },
       body: JSON.stringify(updatedTask),
     });
-    getTasks();
   };
 
   const deleteTask = async (id) => {
     await fetch(`${BASE_URL}/tasks/${id}`, {
       method: "DELETE",
     });
-    getTasks();
   };
 
   return (
@@ -119,7 +97,7 @@ export default function Home() {
             <p className="text-center">Loading...</p>
           ) : isError ? (
             <p className="text-center">
-              {error.message || "Something went wrong"}
+              {error.error || "Something went wrong"}
             </p>
           ) : (
             tasksList.map((task) => (
